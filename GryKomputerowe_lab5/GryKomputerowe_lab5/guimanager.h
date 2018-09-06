@@ -11,6 +11,9 @@ public:
 private:
 	void startScreen();
 	void endScreen();
-	void renderGame();
+	void renderGameHUD();
+	void showScore();
+	void showTime();
+	void showFuel();
 	void renderText(std::string text, int offsetTop, int offsetLeft=90);
 };

@@ -78,9 +78,35 @@ void GUIManager::renderText(std::string text, int offsetTop, int offsetLeft)
 
 }
 
-void GUIManager::renderGame()
+void GUIManager::renderGameHUD()
 {
-	//TODO
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	gluOrtho2D(0.0, 1200, 0.0, 1000);
+
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+	
+	showScore();
+	showTime();
+	showFuel();
+}
+
+void GUIManager::showScore()
+{
+	renderText("Your Points: ", 0, 20);
+}
+
+void GUIManager::showTime()
+{
+	renderText("Time: ", 0, 550);
+}
+
+void GUIManager::showFuel()
+{
+	renderText("Fuel: ", 0, 1100);
 }
 
 void GUIManager::changeScreen(int state)
@@ -95,6 +121,6 @@ void GUIManager::changeScreen(int state)
 	}
 	else
 	{
-
+		renderGameHUD();
 	}
 };
