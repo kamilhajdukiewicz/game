@@ -5,6 +5,7 @@
 #include "model.h"
 #include "scene.h"
 #include "building.h"
+#include "texturemanager.h"
 
 int state = 0;
 GUIManager g_manager;
@@ -68,9 +69,9 @@ int main(int argc, char* argv[])
 	player = new Player();
 	scene.addObject(player);
 
-	for (int i = 0; i < 100; i=i+10)
+	for (int i = 0; i < 50; i=i+5)
 	{
-		for (int j = 0; j < 100; j = j + 10)
+		for (int j = 0; j < 50; j = j + 5)
 		{
 			scene.addObject(new Building(vec3(i, 0, j), vec3(1, 0, 0), 3.0f));
 		}
@@ -163,6 +164,30 @@ void OnRender() {
 
 
 	scene.Render();
+	scene.boundaryMin = vec3(-50, -2, -50);
+	scene.boundaryMax = vec3(50, 10, 50);
+	scene.AddTriangleCollider(vec3(50, 0, -50), vec3(-50, 0, -50), vec3(50, 0, 50), vec3(1, 1), vec3(0, 1), vec3(1, 0), "grass");
+	scene.AddTriangleCollider(vec3(-50, 0, -50), vec3(-50, 0, 50), vec3(50, 0, 50), vec3(0, 1), vec3(0, 0), vec3(1, 0), "grass");
+
+	scene.AddTriangleCollider(vec3(-15, 0, 15), vec3(-15, 15, 15), vec3(15, 15, 15), vec3(1, 0), vec3(1, 1), vec3(0, 1), "brick");
+	scene.AddTriangleCollider(vec3(15, 15, 15), vec3(15, 0, 15), vec3(-15, 0, 15), vec3(0, 1), vec3(0, 0), vec3(1, 0), "brick");
+	scene.AddTriangleCollider(vec3(-15, 15, 15), vec3(-15, 0, 15), vec3(-15, 15, 30), vec3(0, 1), vec3(0, 0), vec3(1, 1), "brick");
+	scene.AddTriangleCollider(vec3(-15, 0, 15), vec3(-15, 0, 30), vec3(-15, 15, 30), vec3(0, 0), vec3(1, 0), vec3(1, 1), "brick");
+	scene.AddTriangleCollider(vec3(-35, 0, 30), vec3(-35, 15, 30), vec3(-15, 15, 30), vec3(1, 0), vec3(1, 1), vec3(0, 1), "brick");
+	scene.AddTriangleCollider(vec3(-15, 15, 30), vec3(-15, 0, 30), vec3(-35, 0, 30), vec3(0, 1), vec3(0, 0), vec3(1, 0), "brick");
+	scene.AddTriangleCollider(vec3(-35, 15, 30), vec3(-35, 0, 30), vec3(-35, 15, -30), vec3(0, 1), vec3(0, 0), vec3(1, 1), "brick");
+	scene.AddTriangleCollider(vec3(-35, 0, 30), vec3(-35, 0, -30), vec3(-35, 15, -30), vec3(0, 0), vec3(1, 0), vec3(1, 1), "brick");
+	scene.AddTriangleCollider(vec3(25, 0, -30), vec3(25, 15, -30), vec3(-35, 15, -30), vec3(1, 0), vec3(1, 1), vec3(0, 1), "brick");
+	scene.AddTriangleCollider(vec3(-35, 15, -30), vec3(-35, 0, -30), vec3(25, 0, -30), vec3(0, 1), vec3(0, 0), vec3(1, 0), "brick");
+	scene.AddTriangleCollider(vec3(25, 15, -30), vec3(25, 0, -30), vec3(25, 15, 25), vec3(0, 1), vec3(0, 0), vec3(1, 1), "brick");
+	scene.AddTriangleCollider(vec3(25, 0, -30), vec3(25, 0, 25), vec3(25, 15, 25), vec3(0, 0), vec3(1, 0), vec3(1, 1), "brick");
+	scene.AddTriangleCollider(vec3(25, 15, 25), vec3(25, 0, 25), vec3(15, 15, 15), vec3(0, 1), vec3(0, 0), vec3(1, 1), "brick");
+	scene.AddTriangleCollider(vec3(25, 0, 25), vec3(15, 0, 15), vec3(15, 15, 15), vec3(0, 0), vec3(1, 0), vec3(1, 1), "brick");
+
+	TextureManager::getInstance()->LoadTexture("grass", "../Resources/Textures/grass.jpg", GL_LINEAR, GL_LINEAR_MIPMAP_NEAREST);
+	TextureManager::getInstance()->LoadTexture("skydome", "../Resources/Textures/skydome.bmp", GL_LINEAR, GL_LINEAR_MIPMAP_NEAREST);
+	TextureManager::getInstance()->LoadTexture("brick", "../Resources/Textures/brick.jpg", GL_LINEAR, GL_LINEAR_MIPMAP_NEAREST);
+
 	g_manager.changeScreen(state);
 
 

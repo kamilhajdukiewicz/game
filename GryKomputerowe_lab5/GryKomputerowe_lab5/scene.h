@@ -3,6 +3,7 @@
 #define SCENE_H
 
 #include "sceneobject.h"
+#include "skydome.h"
 
 
 class Scene
@@ -21,6 +22,8 @@ public:
 	vec3 boundaryMax;
 
 	bool showSphereColliders;
+
+	Skydome* skydome;
 
 private:
 	struct Triangle

@@ -1,10 +1,11 @@
 #include "stdafx.h"
 #include "scene.h"
 #include "texturemanager.h"
+#include "skydome.h"
 
 Scene::Scene()
 {
-
+	skydome = new Skydome(150, "skydome");
 }
 
 Scene::~Scene()
@@ -63,6 +64,8 @@ void Scene::Render()
 
 		glDisable(GL_TEXTURE_2D);
 	}
+
+	skydome->Render();
 }
 
 void Scene::Update()
@@ -186,6 +189,7 @@ void Scene::Update()
 			it = sceneObjects.erase(it);
 		}
 	}
+	skydome->Update();
 }
 
 void Scene::addObject(SceneObject* object)
