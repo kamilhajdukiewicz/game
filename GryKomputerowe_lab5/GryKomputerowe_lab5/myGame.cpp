@@ -40,8 +40,6 @@ int main(int argc, char* argv[])
 
 	glutCreateWindow("MyGame");
 
-	//glClearColor(0.74902f, 0.847059f, 0.847059f, 1.0);
-
 	glutDisplayFunc(OnRender);
 	glutReshapeFunc(OnReshape);
 	glutKeyboardFunc(OnKeyPress);
@@ -53,15 +51,15 @@ int main(int argc, char* argv[])
 
 	glEnable(GL_DEPTH_TEST);
 
-	//float gl_amb[] = { 0.0f, 0.0f, 0.0f, 1.0f };
-	//glLightModelfv(GL_LIGHT_MODEL_AMBIENT, gl_amb);
+	float gl_amb[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, gl_amb);
 
-	//glEnable(GL_LIGHTING);
-	//glShadeModel(GL_SMOOTH);
+	glEnable(GL_LIGHTING);
+	glShadeModel(GL_SMOOTH);
 
-	//glEnable(GL_CULL_FACE);
-	//glFrontFace(GL_CCW);
-	//glCullFace(GL_BACK);
+	glEnable(GL_CULL_FACE);
+	glFrontFace(GL_CCW);
+	glCullFace(GL_BACK);
 
 	glutSetCursor(GLUT_CURSOR_NONE);
 	captureMouse = true;
@@ -70,7 +68,14 @@ int main(int argc, char* argv[])
 	player = new Player();
 	scene.addObject(player);
 
-	scene.addObject(new Building(vec3(0, 0, 0), vec3(1, 0, 0),2.0f));
+	for (int i = 0; i < 100; i=i+10)
+	{
+		for (int j = 0; j < 100; j = j + 10)
+		{
+			scene.addObject(new Building(vec3(i, 0, j), vec3(1, 0, 0), 3.0f));
+		}
+	}
+	
 
 
 
@@ -120,6 +125,24 @@ void OnMouseClick(int button, int state, int x, int y)
 
 void OnTimer(int id) {
 
+	if (captureMouse)
+	{
+		float theta = atan2(player->dir.z, player->dir.x);
+		float phi = asin(player->dir.y);
+
+		theta += (round(mousePosition.x) - windowCenterX) * 0.01;
+		phi -= (round(mousePosition.y) - windowCenterY) * 0.01;
+
+		if (phi > 1.4) phi = 1.4;
+		if (phi < -1.4) phi = -1.4;
+
+		player->dir.x = cos(theta) * cos(phi);
+		player->dir.y = sin(phi);
+		player->dir.z = sin(theta) * cos(phi);
+
+		glutWarpPointer(windowCenterX, windowCenterY);
+	}
+
 	glutTimerFunc(17, OnTimer, 0);
 }
 
@@ -138,9 +161,35 @@ void OnRender() {
 		0.0f, 1.0f, 0.0f
 	);
 
+
 	scene.Render();
 	g_manager.changeScreen(state);
-	
+
+
+	GLfloat l0_ambient[] = { 0.2f, 0.2f, 0.2f };
+	GLfloat l0_diffuse[] = { 1.0f, 1.0f, 1.0 };
+	GLfloat l0_specular[] = { 0.5f, 0.5f, 0.5f };
+	GLfloat l0_position[] = { 0, 0, 3, 1.0f };
+	GLfloat l0_position2[] = { 15, 0, 3, 1.0f };
+
+	glEnable(GL_LIGHT0);
+	glLightfv(GL_LIGHT0, GL_AMBIENT, l0_ambient);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, l0_diffuse);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, l0_specular);
+	glLightfv(GL_LIGHT0, GL_POSITION, l0_position);
+	glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 0);
+	glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.2);
+	glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0);
+
+	glEnable(GL_LIGHT1);
+	glLightfv(GL_LIGHT1, GL_AMBIENT, l0_ambient);
+	glLightfv(GL_LIGHT1, GL_DIFFUSE, l0_diffuse);
+	glLightfv(GL_LIGHT1, GL_SPECULAR, l0_specular);
+	glLightfv(GL_LIGHT1, GL_POSITION, l0_position2);
+	glLightf(GL_LIGHT1, GL_CONSTANT_ATTENUATION, 0);
+	glLightf(GL_LIGHT1, GL_LINEAR_ATTENUATION, 0.2);
+	glLightf(GL_LIGHT1, GL_QUADRATIC_ATTENUATION, 0);
+		
 	glFlush();
 	glutSwapBuffers();
 	glutPostRedisplay();
