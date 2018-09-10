@@ -34,7 +34,7 @@ void Building::Render()
 
 	glPushMatrix();
 
-	glTranslatef(pos.x, pos.y, pos.z);
+	glTranslatef(pos.x, pos.y-1, pos.z);
 
 	glBegin(GL_QUADS);
 

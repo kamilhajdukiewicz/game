@@ -69,15 +69,40 @@ int main(int argc, char* argv[])
 	player = new Player();
 	scene.addObject(player);
 
-	for (int i = 0; i < 50; i=i+5)
+	for (int i = 0; i < 30; i=i+5)
 	{
-		for (int j = 0; j < 50; j = j + 5)
+		for (int j = 0; j < 30; j = j + 5)
 		{
-			scene.addObject(new Building(vec3(i, 0, j), vec3(1, 0, 0), 3.0f));
+			scene.addObject(new Building(vec3(i, 0, j), vec3(1, 0, 0), 1.0f));
 		}
 	}
 	
+	scene.boundaryMin = vec3(-50, 1, -50);
+	scene.boundaryMax = vec3(50, 10, 50);
+	scene.AddTriangleCollider(vec3(100, 0, -100), vec3(-100, 0, -100), vec3(100, 0, 100), vec3(1, 1), vec3(0, 1), vec3(1, 0), "grass");
+	scene.AddTriangleCollider(vec3(-100, 0, -100), vec3(-100, 0, 100), vec3(100, 0, 100), vec3(0, 1), vec3(0, 0), vec3(1, 0), "grass");
 
+	//scene.AddTriangleCollider(vec3(-100, 20, 100), vec3(-100, 0, 100), vec3(-100, 20, -100), vec3(0, 1), vec3(0, 0), vec3(1, 1), "brick");
+	//scene.AddTriangleCollider(vec3(-100, 0, 100), vec3(-100, 0, -100), vec3(-100, 20, -100), vec3(0, 0), vec3(1, 0), vec3(1, 1), "brick");
+	//scene.AddTriangleCollider(vec3(100, 0, -100), vec3(100, 20, -100), vec3(-100, 20, -100), vec3(1, 0), vec3(1, 1), vec3(0, 1), "brick");
+	//scene.AddTriangleCollider(vec3(-100, 20, -100), vec3(-100, 0, -100), vec3(100, 0, -100), vec3(0, 1), vec3(0, 0), vec3(1, 0), "brick");
+	//scene.AddTriangleCollider(vec3(100, 20, -100), vec3(100, 0, -100), vec3(100, 20, 100), vec3(0, 1), vec3(0, 0), vec3(1, 1), "brick");
+	//scene.AddTriangleCollider(vec3(100, 0, -100), vec3(100, 0, 100), vec3(100, 20, 100), vec3(0, 0), vec3(1, 0), vec3(1, 1), "brick");
+
+	//scene.AddTriangleCollider(vec3(-52, 0, 45), vec3(-52, 22, 45), vec3(-30, 22, 45), vec3(1, 0), vec3(1, 1), vec3(0, 1), "brick");
+	//scene.AddTriangleCollider(vec3(-30, 22, 45), vec3(-30, 0, 45), vec3(-52, 0, 45), vec3(0, 1), vec3(0, 0), vec3(1, 0), "brick");
+	//scene.AddTriangleCollider(vec3(-52, 22, 45), vec3(-52, 0, 45), vec3(-52, 22, -45), vec3(0, 1), vec3(0, 0), vec3(1, 1), "brick");
+	//scene.AddTriangleCollider(vec3(-52, 0, 45), vec3(-52, 0, -45), vec3(-52, 22, -45), vec3(0, 0), vec3(1, 0), vec3(1, 1), "brick");
+	//scene.AddTriangleCollider(vec3(37, 0, -45), vec3(50, 22, -45), vec3(-52, 22, -45), vec3(1, 0), vec3(1, 1), vec3(0, 1), "brick");
+	//scene.AddTriangleCollider(vec3(-52, 22, -45), vec3(-52, 0, -45), vec3(37, 0, -45), vec3(0, 1), vec3(0, 0), vec3(1, 0), "brick");
+	//scene.AddTriangleCollider(vec3(37, 22, -45), vec3(37, 0, -45), vec3(37, 22, 37), vec3(0, 1), vec3(0, 0), vec3(1, 1), "brick");
+	//scene.AddTriangleCollider(vec3(37, 0, -45), vec3(37, 0, 37), vec3(37, 22, 37), vec3(0, 0), vec3(1, 0), vec3(1, 1), "brick");
+	//scene.AddTriangleCollider(vec3(37, 22, 37), vec3(37, 0, 37), vec3(30, 22, 30), vec3(0, 1), vec3(0, 0), vec3(1, 1), "brick");
+	//scene.AddTriangleCollider(vec3(37, 0, 37), vec3(37, 0, 22), vec3(30, 22, 30), vec3(0, 0), vec3(1, 0), vec3(1, 1), "brick");
+
+	TextureManager::getInstance()->LoadTexture("grass", "../Resources/Textures/grass.jpg", GL_LINEAR, GL_LINEAR_MIPMAP_NEAREST);
+	TextureManager::getInstance()->LoadTexture("skydome", "../Resources/Textures/skydome.bmp", GL_LINEAR, GL_LINEAR_MIPMAP_NEAREST);
+	TextureManager::getInstance()->LoadTexture("brick", "../Resources/Textures/brick.jpg", GL_LINEAR, GL_LINEAR_MIPMAP_NEAREST);
 
 
 	glutMainLoop();
@@ -126,6 +151,19 @@ void OnMouseClick(int button, int state, int x, int y)
 
 void OnTimer(int id) {
 
+	if (keystate['w']) {
+		player->velocity_vertical = 1;
+	}
+	if (keystate['s']) {
+		player->velocity_vertical = -1;
+	}
+	if (keystate['a']) {
+		player->velocity_horizontal = 1;
+	}
+	if (keystate['d']) {
+		player->velocity_horizontal = -1;
+	}
+
 	if (captureMouse)
 	{
 		float theta = atan2(player->dir.z, player->dir.x);
@@ -143,6 +181,8 @@ void OnTimer(int id) {
 
 		glutWarpPointer(windowCenterX, windowCenterY);
 	}
+
+	scene.Update();
 
 	glutTimerFunc(17, OnTimer, 0);
 }
@@ -164,37 +204,13 @@ void OnRender() {
 
 
 	scene.Render();
-	scene.boundaryMin = vec3(-50, -2, -50);
-	scene.boundaryMax = vec3(50, 10, 50);
-	scene.AddTriangleCollider(vec3(50, 0, -50), vec3(-50, 0, -50), vec3(50, 0, 50), vec3(1, 1), vec3(0, 1), vec3(1, 0), "grass");
-	scene.AddTriangleCollider(vec3(-50, 0, -50), vec3(-50, 0, 50), vec3(50, 0, 50), vec3(0, 1), vec3(0, 0), vec3(1, 0), "grass");
-
-	scene.AddTriangleCollider(vec3(-15, 0, 15), vec3(-15, 15, 15), vec3(15, 15, 15), vec3(1, 0), vec3(1, 1), vec3(0, 1), "brick");
-	scene.AddTriangleCollider(vec3(15, 15, 15), vec3(15, 0, 15), vec3(-15, 0, 15), vec3(0, 1), vec3(0, 0), vec3(1, 0), "brick");
-	scene.AddTriangleCollider(vec3(-15, 15, 15), vec3(-15, 0, 15), vec3(-15, 15, 30), vec3(0, 1), vec3(0, 0), vec3(1, 1), "brick");
-	scene.AddTriangleCollider(vec3(-15, 0, 15), vec3(-15, 0, 30), vec3(-15, 15, 30), vec3(0, 0), vec3(1, 0), vec3(1, 1), "brick");
-	scene.AddTriangleCollider(vec3(-35, 0, 30), vec3(-35, 15, 30), vec3(-15, 15, 30), vec3(1, 0), vec3(1, 1), vec3(0, 1), "brick");
-	scene.AddTriangleCollider(vec3(-15, 15, 30), vec3(-15, 0, 30), vec3(-35, 0, 30), vec3(0, 1), vec3(0, 0), vec3(1, 0), "brick");
-	scene.AddTriangleCollider(vec3(-35, 15, 30), vec3(-35, 0, 30), vec3(-35, 15, -30), vec3(0, 1), vec3(0, 0), vec3(1, 1), "brick");
-	scene.AddTriangleCollider(vec3(-35, 0, 30), vec3(-35, 0, -30), vec3(-35, 15, -30), vec3(0, 0), vec3(1, 0), vec3(1, 1), "brick");
-	scene.AddTriangleCollider(vec3(25, 0, -30), vec3(25, 15, -30), vec3(-35, 15, -30), vec3(1, 0), vec3(1, 1), vec3(0, 1), "brick");
-	scene.AddTriangleCollider(vec3(-35, 15, -30), vec3(-35, 0, -30), vec3(25, 0, -30), vec3(0, 1), vec3(0, 0), vec3(1, 0), "brick");
-	scene.AddTriangleCollider(vec3(25, 15, -30), vec3(25, 0, -30), vec3(25, 15, 25), vec3(0, 1), vec3(0, 0), vec3(1, 1), "brick");
-	scene.AddTriangleCollider(vec3(25, 0, -30), vec3(25, 0, 25), vec3(25, 15, 25), vec3(0, 0), vec3(1, 0), vec3(1, 1), "brick");
-	scene.AddTriangleCollider(vec3(25, 15, 25), vec3(25, 0, 25), vec3(15, 15, 15), vec3(0, 1), vec3(0, 0), vec3(1, 1), "brick");
-	scene.AddTriangleCollider(vec3(25, 0, 25), vec3(15, 0, 15), vec3(15, 15, 15), vec3(0, 0), vec3(1, 0), vec3(1, 1), "brick");
-
-	TextureManager::getInstance()->LoadTexture("grass", "../Resources/Textures/grass.jpg", GL_LINEAR, GL_LINEAR_MIPMAP_NEAREST);
-	TextureManager::getInstance()->LoadTexture("skydome", "../Resources/Textures/skydome.bmp", GL_LINEAR, GL_LINEAR_MIPMAP_NEAREST);
-	TextureManager::getInstance()->LoadTexture("brick", "../Resources/Textures/brick.jpg", GL_LINEAR, GL_LINEAR_MIPMAP_NEAREST);
-
 	g_manager.changeScreen(state);
 
 
 	GLfloat l0_ambient[] = { 0.2f, 0.2f, 0.2f };
 	GLfloat l0_diffuse[] = { 1.0f, 1.0f, 1.0 };
 	GLfloat l0_specular[] = { 0.5f, 0.5f, 0.5f };
-	GLfloat l0_position[] = { 0, 0, 3, 1.0f };
+	GLfloat l0_position[] = { player->pos.x, player->pos.y, player->pos.z, 1.0f };
 	GLfloat l0_position2[] = { 15, 0, 3, 1.0f };
 
 	glEnable(GL_LIGHT0);
@@ -205,15 +221,6 @@ void OnRender() {
 	glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 0);
 	glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.2);
 	glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0);
-
-	glEnable(GL_LIGHT1);
-	glLightfv(GL_LIGHT1, GL_AMBIENT, l0_ambient);
-	glLightfv(GL_LIGHT1, GL_DIFFUSE, l0_diffuse);
-	glLightfv(GL_LIGHT1, GL_SPECULAR, l0_specular);
-	glLightfv(GL_LIGHT1, GL_POSITION, l0_position2);
-	glLightf(GL_LIGHT1, GL_CONSTANT_ATTENUATION, 0);
-	glLightf(GL_LIGHT1, GL_LINEAR_ATTENUATION, 0.2);
-	glLightf(GL_LIGHT1, GL_QUADRATIC_ATTENUATION, 0);
 		
 	glFlush();
 	glutSwapBuffers();
@@ -222,17 +229,12 @@ void OnRender() {
 
 void OnReshape(int width, int height) {
 
-	// Wybor macierzy - macierz Projekcji.
 	glMatrixMode(GL_PROJECTION);
 
-	// Zaladowanie macierzy jednostkowej.
 	glLoadIdentity();
 
-	// Okreslenie obszaru renderowania - caly obszar okna.
 	glViewport(0, 0, width, height);
 
-	// Chcemy uzyc kamery perspektywicznej o kacie widzenia 60 stopni
-	// i zasiegu renderowania 0.01-100.0 jednostek.
-	gluPerspective(60.0f, (float)width / height, .01f, 100.0f);
+	gluPerspective(60.0f, (float)width / height, .01f, 120.0f);
 
 }

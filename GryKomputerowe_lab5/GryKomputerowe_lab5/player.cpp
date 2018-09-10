@@ -12,12 +12,10 @@ Player::Player()
 	dir.z = -1.0f;
 
 	speed = 0.1f;
-	radius = 2.0f;
+	radius = 0.0f;
 
 	velocity_horizontal = 0;
 	velocity_vertical = 0;
-
-	flyingMode = false;
 
 	weight = 2;
 
@@ -35,11 +33,6 @@ void Player::Update()
 	pos.x += dir.z * speed * velocity_horizontal;
 	pos.z -= dir.x * speed * velocity_horizontal;
 
-	if (flyingMode)
-		pos.y += dir.y * speed * velocity_vertical;
-	else
-		pos.y = 9.0;
-
 	velocity_vertical /= 1.2;
 	velocity_horizontal /= 1.2;
 
@@ -50,6 +43,8 @@ void Player::Update()
 	force.x /= 1.2;
 	force.y /= 1.2;
 	force.z /= 1.2;
+
+	fuel += 0.5f;
 
 	if (fuel > maxFuel)
 		fuel = maxFuel;
