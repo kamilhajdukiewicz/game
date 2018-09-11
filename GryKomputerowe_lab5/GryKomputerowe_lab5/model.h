@@ -9,7 +9,7 @@
 class Model: public SceneObject
 {
 public:
-	Model();
+	Model(vec3 pos, vec3 color);
 	~Model();
 
 	bool load(std::string filepath);

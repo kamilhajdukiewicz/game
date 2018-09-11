@@ -6,6 +6,8 @@
 #include "scene.h"
 #include "building.h"
 #include "texturemanager.h"
+#include "point.h"
+#include "model.h"
 
 int state = 0;
 GUIManager g_manager;
@@ -69,18 +71,28 @@ int main(int argc, char* argv[])
 	player = new Player();
 	scene.addObject(player);
 
-	for (int i = 0; i < 30; i=i+5)
+	Model* model = new Model(vec3(player->pos.x, 0, player->pos.z-1), vec3(1, 0, 1));
+	model->load("../Resources/Models/lowpoly.obj");
+	model->textureName = "brick";
+	model->modelTranslation = vec3(0, -0.8f, 0);
+	model->modelScale = vec3(0.5, 0.5, 0.5);
+	model->radius *= 0.1f;
+	scene.addObject(model);
+
+	for (int i = - 30; i < 25; i=i+5)
 	{
-		for (int j = 0; j < 30; j = j + 5)
+		for (int j = -30; j < 25; j = j + 5)
 		{
 			scene.addObject(new Building(vec3(i, 0, j), vec3(1, 0, 0), 1.0f));
 		}
 	}
+
+	scene.addObject(new Point(vec3(-27.5f, 0, -27.5f), vec3(0, 1, 0), 0.5f, 2));
 	
 	scene.boundaryMin = vec3(-50, 1, -50);
 	scene.boundaryMax = vec3(50, 10, 50);
-	scene.AddTriangleCollider(vec3(100, 0, -100), vec3(-100, 0, -100), vec3(100, 0, 100), vec3(1, 1), vec3(0, 1), vec3(1, 0), "grass");
-	scene.AddTriangleCollider(vec3(-100, 0, -100), vec3(-100, 0, 100), vec3(100, 0, 100), vec3(0, 1), vec3(0, 0), vec3(1, 0), "grass");
+	scene.AddTriangleCollider(vec3(100, 0, -100), vec3(-100, 0, -100), vec3(100, 0, 100), vec3(1, 1), vec3(0, 1), vec3(1, 0), "bawtext");
+	scene.AddTriangleCollider(vec3(-100, 0, -100), vec3(-100, 0, 100), vec3(100, 0, 100), vec3(0, 1), vec3(0, 0), vec3(1, 0), "bawtext");
 
 	//scene.AddTriangleCollider(vec3(-100, 20, 100), vec3(-100, 0, 100), vec3(-100, 20, -100), vec3(0, 1), vec3(0, 0), vec3(1, 1), "brick");
 	//scene.AddTriangleCollider(vec3(-100, 0, 100), vec3(-100, 0, -100), vec3(-100, 20, -100), vec3(0, 0), vec3(1, 0), vec3(1, 1), "brick");
@@ -101,8 +113,8 @@ int main(int argc, char* argv[])
 	//scene.AddTriangleCollider(vec3(37, 0, 37), vec3(37, 0, 22), vec3(30, 22, 30), vec3(0, 0), vec3(1, 0), vec3(1, 1), "brick");
 
 	TextureManager::getInstance()->LoadTexture("grass", "../Resources/Textures/grass.jpg", GL_LINEAR, GL_LINEAR_MIPMAP_NEAREST);
-	TextureManager::getInstance()->LoadTexture("skydome", "../Resources/Textures/skydome.bmp", GL_LINEAR, GL_LINEAR_MIPMAP_NEAREST);
-	TextureManager::getInstance()->LoadTexture("brick", "../Resources/Textures/brick.jpg", GL_LINEAR, GL_LINEAR_MIPMAP_NEAREST);
+	TextureManager::getInstance()->LoadTexture("skydome2", "../Resources/Textures/skydome2.bmp", GL_LINEAR, GL_LINEAR_MIPMAP_NEAREST);
+	TextureManager::getInstance()->LoadTexture("bawtext", "../Resources/Textures/bawtext.jpg", GL_LINEAR, GL_LINEAR_MIPMAP_NEAREST);
 
 
 	glutMainLoop();

@@ -5,7 +5,7 @@
 
 Scene::Scene()
 {
-	skydome = new Skydome(60, "skydome");
+	skydome = new Skydome(60, "skydome2");
 }
 
 Scene::~Scene()

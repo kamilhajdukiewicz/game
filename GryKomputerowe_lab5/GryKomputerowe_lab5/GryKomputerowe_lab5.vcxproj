@@ -88,6 +88,7 @@
     <ClInclude Include="guimanager.h" />
     <ClInclude Include="model.h" />
     <ClInclude Include="player.h" />
+    <ClInclude Include="point.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="sceneobject.h" />
     <ClInclude Include="skydome.h" />
@@ -103,6 +104,7 @@
     <ClCompile Include="model.cpp" />
     <ClCompile Include="myGame.cpp" />
     <ClCompile Include="player.cpp" />
+    <ClCompile Include="point.cpp" />
     <ClCompile Include="scene.cpp" />
     <ClCompile Include="sceneobject.cpp" />
     <ClCompile Include="skydome.cpp" />

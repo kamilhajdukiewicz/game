@@ -4,7 +4,7 @@
 Player::Player()
 {
 	pos.x = 0.0f;
-	pos.y = 1.0f;
+	pos.y = 2.0f;
 	pos.z = 10.0f;
 
 	dir.x = 0.0f;
@@ -12,7 +12,7 @@ Player::Player()
 	dir.z = -1.0f;
 
 	speed = 0.1f;
-	radius = 0.0f;
+	radius = 0.5f;
 
 	velocity_horizontal = 0;
 	velocity_vertical = 0;
@@ -37,11 +37,11 @@ void Player::Update()
 	velocity_horizontal /= 1.2;
 
 	pos.x += force.x / weight;
-	pos.y += force.y / weight;
+	//pos.y += force.y / weight;
 	pos.z += force.z / weight;
 
 	force.x /= 1.2;
-	force.y /= 1.2;
+	//force.y /= 1.2;
 	force.z /= 1.2;
 
 	fuel += 0.5f;

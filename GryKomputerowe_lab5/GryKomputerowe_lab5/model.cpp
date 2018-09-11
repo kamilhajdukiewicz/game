@@ -2,7 +2,8 @@
 #include "model.h"
 #include "texturemanager.h"
 
-Model::Model()
+
+Model::Model(vec3 pos, vec3 color)
 {
 	this->pos = pos;
 	this->color = color;
