@@ -29,6 +29,12 @@ public:
 
 	GLuint displayListID;
 
+	vec3 dir;
+	float speed;
+
+	float velocity_vertical;
+	float velocity_horizontal;
+
 	std::vector<vec3> vertices;
 	std::vector<vec3> normals;
 	std::vector<vec3> uvs;

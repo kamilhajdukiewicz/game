@@ -13,6 +13,7 @@ int state = 0;
 GUIManager g_manager;
 Scene scene;
 Player *player;
+Model* model;
 void OnRender();
 void OnReshape(int, int);
 void OnKeyPress(unsigned char, int, int);
@@ -71,13 +72,17 @@ int main(int argc, char* argv[])
 	player = new Player();
 	scene.addObject(player);
 
-	Model* model = new Model(vec3(player->pos.x, 0, player->pos.z-1), vec3(1, 0, 1));
+	model = new Model(vec3(player->pos.x, 0, player->pos.z-4), vec3(0, 0.5f, 1));
 	model->load("../Resources/Models/lowpoly.obj");
-	model->textureName = "brick";
+	//model->textureName = "brick";
 	model->modelTranslation = vec3(0, -0.8f, 0);
 	model->modelScale = vec3(0.5, 0.5, 0.5);
-	model->radius *= 0.1f;
+	model->radius *= 0.2f;
 	scene.addObject(model);
+
+	player = new Player();
+	scene.addObject(player);
+
 
 	for (int i = - 30; i < 25; i=i+5)
 	{
@@ -87,7 +92,9 @@ int main(int argc, char* argv[])
 		}
 	}
 
-	scene.addObject(new Point(vec3(-27.5f, 0, -27.5f), vec3(0, 1, 0), 0.5f, 2));
+	Point * point = new Point(vec3(-27.5f, 0, -27.5f), vec3(0, 1, 0), 0.5f, 2);
+	point->ambient = vec3(0.7f, 0.7f, 0.7f);
+	scene.addObject(point);
 	
 	scene.boundaryMin = vec3(-50, 1, -50);
 	scene.boundaryMax = vec3(50, 10, 50);
@@ -164,35 +171,40 @@ void OnMouseClick(int button, int state, int x, int y)
 void OnTimer(int id) {
 
 	if (keystate['w']) {
+		model->velocity_vertical = 1;
 		player->velocity_vertical = 1;
 	}
 	if (keystate['s']) {
+		model->velocity_vertical = -1;
 		player->velocity_vertical = -1;
 	}
 	if (keystate['a']) {
+		model->velocity_horizontal = 1;
 		player->velocity_horizontal = 1;
 	}
 	if (keystate['d']) {
+		model->velocity_horizontal = -1;
 		player->velocity_horizontal = -1;
 	}
 
-	if (captureMouse)
-	{
-		float theta = atan2(player->dir.z, player->dir.x);
-		float phi = asin(player->dir.y);
+	//if (captureMouse)
+	//{
+	//	float theta = atan2(player->dir.z, player->dir.x);
+	//	float phi = asin(player->dir.y);
 
-		theta += (round(mousePosition.x) - windowCenterX) * 0.01;
-		phi -= (round(mousePosition.y) - windowCenterY) * 0.01;
+	//	theta += (round(mousePosition.x) - windowCenterX) * 0.01;
+	//	phi -= (round(mousePosition.y) - windowCenterY) * 0.01;
 
-		if (phi > 1.4) phi = 1.4;
-		if (phi < -1.4) phi = -1.4;
+	//	if (phi > 1.4) phi = 1.4;
+	//	if (phi < -1.4) phi = -1.4;
 
-		player->dir.x = cos(theta) * cos(phi);
-		player->dir.y = sin(phi);
-		player->dir.z = sin(theta) * cos(phi);
+	//	player->dir.x = cos(theta) * cos(phi);
+	//	player->dir.y = sin(phi);
+	//	player->dir.z = sin(theta) * cos(phi);
 
-		glutWarpPointer(windowCenterX, windowCenterY);
-	}
+	//	glutWarpPointer(windowCenterX, windowCenterY);
+	//}
+
 
 	scene.Update();
 
@@ -222,8 +234,8 @@ void OnRender() {
 	GLfloat l0_ambient[] = { 0.2f, 0.2f, 0.2f };
 	GLfloat l0_diffuse[] = { 1.0f, 1.0f, 1.0 };
 	GLfloat l0_specular[] = { 0.5f, 0.5f, 0.5f };
-	GLfloat l0_position[] = { player->pos.x, player->pos.y, player->pos.z, 1.0f };
-	GLfloat l0_position2[] = { 15, 0, 3, 1.0f };
+	GLfloat l0_position[] = { model->pos.x, model->pos.y, model->pos.z-0.5, 1.0f };
+	GLfloat l0_position2[] = { player->pos.x, player->pos.y, player->pos.z, 0.5f };
 
 	glEnable(GL_LIGHT0);
 	glLightfv(GL_LIGHT0, GL_AMBIENT, l0_ambient);
@@ -233,6 +245,15 @@ void OnRender() {
 	glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 0);
 	glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.2);
 	glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0);
+
+	glEnable(GL_LIGHT1);
+	glLightfv(GL_LIGHT1, GL_AMBIENT, l0_ambient);
+	glLightfv(GL_LIGHT1, GL_DIFFUSE, l0_diffuse);
+	glLightfv(GL_LIGHT1, GL_SPECULAR, l0_specular);
+	glLightfv(GL_LIGHT1, GL_POSITION, l0_position2);
+	glLightf(GL_LIGHT1, GL_CONSTANT_ATTENUATION, 0);
+	glLightf(GL_LIGHT1, GL_LINEAR_ATTENUATION, 0.2);
+	glLightf(GL_LIGHT1, GL_QUADRATIC_ATTENUATION, 0);
 		
 	glFlush();
 	glutSwapBuffers();

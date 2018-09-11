@@ -4,7 +4,7 @@
 Player::Player()
 {
 	pos.x = 0.0f;
-	pos.y = 2.0f;
+	pos.y = 3.0f;
 	pos.z = 10.0f;
 
 	dir.x = 0.0f;
@@ -27,6 +27,8 @@ void Player::Render() {};
 
 void Player::Update()
 {
+	pos.y = 3.0f;
+
 	pos.x += dir.x * speed * velocity_vertical;
 	pos.z += dir.z * speed * velocity_vertical;
 
