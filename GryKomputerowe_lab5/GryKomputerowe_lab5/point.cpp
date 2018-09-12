@@ -45,3 +45,5 @@ void Point::Update()
 		isAlive = false;
 	}
 }
+
+

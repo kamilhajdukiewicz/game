@@ -12,8 +12,8 @@ Model::Model(vec3 pos, vec3 color)
 	dir.y = 0.0f;
 	dir.z = -1.0f;
 
-	speed = 0.3f;
-	radius = 0.5f;
+	speed = 0.15f;
+	radius = 0.3f;
 
 	velocity_horizontal = 0;
 	velocity_vertical = 0;
@@ -243,17 +243,17 @@ void Model::rotate()
 {
 	if (rotateLeft == true)
 	{
-		glRotatef(-90, 0, 1, 0);
+		glRotatef(90, 0, 1, 0);
 		//rotateRight = false;
 	}
 	if (rotateRight == true)
 	{
-		glRotatef(90, 0, 1, 0);
+		glRotatef(-90, 0, 1, 0);
 		//rotateLeft = false;
 	}
 	if (rotateForward == true)
 	{
-		glRotatef(180, 0, 1, 0);
+		glRotatef(-180, 0, 1, 0);
 	}
 
 }

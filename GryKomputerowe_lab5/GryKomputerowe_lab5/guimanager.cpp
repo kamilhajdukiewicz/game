@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "guimanager.h"
 #include "gamemanager.h"
+#include <string>
 
 GUIManager::GUIManager()
 {
@@ -64,6 +65,31 @@ void GUIManager::endScreen()
 	glPopMatrix();
 }
 
+void GUIManager::winScreen(int score)
+{
+
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	gluOrtho2D(0.0, 1200, 0.0, 1000);
+
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+
+	renderText("THE END", 150, 560);
+	renderText("Your Score: "+std::to_string(score), 200, 550);
+
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+}
+
 void GUIManager::renderText(std::string text, int offsetTop, int offsetLeft)
 {
 	glColor3f(0.0, 1.0, 0.0);
@@ -78,7 +104,7 @@ void GUIManager::renderText(std::string text, int offsetTop, int offsetLeft)
 
 }
 
-void GUIManager::renderGameHUD()
+void GUIManager::renderGameHUD(int score, float fuel, int hp)
 {
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
@@ -89,27 +115,36 @@ void GUIManager::renderGameHUD()
 	glPushMatrix();
 	glLoadIdentity();
 	
-	showScore();
-	showTime();
-	showFuel();
+	showScore(score);
+	showHp(hp);
+	showFuel(fuel);
+
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
 }
 
-void GUIManager::showScore()
+void GUIManager::showScore(int score)
 {
-	renderText("Your Points: ", 0, 20);
+	renderText("Your Points: "+std::to_string(score), 0, 550);
 }
 
-void GUIManager::showTime()
+void GUIManager::showHp(int hp)
 {
-	renderText("Time: ", 0, 550);
+	renderText("Hp: "+std::to_string(hp), 0, 20);
 }
 
-void GUIManager::showFuel()
+void GUIManager::showFuel(float fuel)
 {
-	renderText("Fuel: ", 0, 1100);
+	renderText("Fuel: "+std::to_string(fuel), 0, 1100);
 }
 
-void GUIManager::changeScreen(int state)
+void GUIManager::changeScreen(int state, int score, float fuel, int hp)
 {
 	if (state == 0)
 	{
@@ -119,8 +154,12 @@ void GUIManager::changeScreen(int state)
 	{
 		endScreen();
 	}
-	else
+	else if(state==2)
 	{
-		renderGameHUD();
+		renderGameHUD(score, fuel, hp);
+	}
+	else if (state == 3)
+	{
+		winScreen(score);
 	}
 };

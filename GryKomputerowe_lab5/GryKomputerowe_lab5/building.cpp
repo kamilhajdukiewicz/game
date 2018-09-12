@@ -98,7 +98,6 @@ void Building::Render()
 	glTexCoord2f(1 * uvMultipler, 0);
 	glVertex3f(size / 2, -size / 2, size / 2);
 
-	glScalef(2.0f, 1.0f, 1.0f);
 
 	glEnd();
 

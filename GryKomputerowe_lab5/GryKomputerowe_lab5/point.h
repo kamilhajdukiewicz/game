@@ -12,5 +12,7 @@ public:
 	void Render();
 	void Update();
 
+	void isColid(float x, float z, float x2, float z2);
+
 	float radiusChangePerUpdate;
 };

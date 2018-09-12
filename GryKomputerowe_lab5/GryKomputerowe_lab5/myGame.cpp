@@ -23,6 +23,7 @@ void OnTimer(int);
 void OnMouseMove(int, int);
 void OnMouseClick(int, int, int, int);
 
+bool fly=false;
 vec3 mousePosition;
 
 float T = 0;
@@ -69,24 +70,20 @@ int main(int argc, char* argv[])
 	captureMouse = true;
 	glutWarpPointer(windowCenterX, windowCenterY);
 
-	player = new Player();
+	player = Player::getInstance();
 	scene.addObject(player);
 
 	model = new Model(vec3(player->pos.x, 0, player->pos.z-4), vec3(0, 0.5f, 1));
-	model->load("../Resources/Models/dino.obj");
+	model->load("../Resources/Models/car2obj.obj");
 	//model->textureName = "brick";
 	model->modelTranslation = vec3(0, -0.8f, 0);
-	model->modelScale = vec3(0.05, 0.05, 0.05);
-	model->radius *= 0.05f;
+	model->modelScale = vec3(0.5, 0.5, 0.5);
+	model->radius *= 0.5f;
 	scene.addObject(model);
 
-	player = new Player();
-	scene.addObject(player);
-
-
-	for (int i = - 30; i < 25; i=i+5)
+	for (int i = - 35; i < 30; i=i+5)
 	{
-		for (int j = -30; j < 25; j = j + 5)
+		for (int j = -35; j < 30; j = j + 5)
 		{
 			scene.addObject(new Building(vec3(i, 0, j), vec3(1, 0, 0), 1.0f));
 		}
@@ -94,33 +91,15 @@ int main(int argc, char* argv[])
 
 	Point * point = new Point(vec3(-27.5f, 0, -27.5f), vec3(0, 1, 0), 0.5f, 2);
 	point->ambient = vec3(0.7f, 0.7f, 0.7f);
-	scene.addObject(point);
+	scene.addPoint(point);
 	
 	scene.boundaryMin = vec3(-50, 1, -50);
 	scene.boundaryMax = vec3(50, 10, 50);
 	scene.AddTriangleCollider(vec3(100, 0, -100), vec3(-100, 0, -100), vec3(100, 0, 100), vec3(1, 1), vec3(0, 1), vec3(1, 0), "bawtext");
 	scene.AddTriangleCollider(vec3(-100, 0, -100), vec3(-100, 0, 100), vec3(100, 0, 100), vec3(0, 1), vec3(0, 0), vec3(1, 0), "bawtext");
 
-	//scene.AddTriangleCollider(vec3(-100, 20, 100), vec3(-100, 0, 100), vec3(-100, 20, -100), vec3(0, 1), vec3(0, 0), vec3(1, 1), "brick");
-	//scene.AddTriangleCollider(vec3(-100, 0, 100), vec3(-100, 0, -100), vec3(-100, 20, -100), vec3(0, 0), vec3(1, 0), vec3(1, 1), "brick");
-	//scene.AddTriangleCollider(vec3(100, 0, -100), vec3(100, 20, -100), vec3(-100, 20, -100), vec3(1, 0), vec3(1, 1), vec3(0, 1), "brick");
-	//scene.AddTriangleCollider(vec3(-100, 20, -100), vec3(-100, 0, -100), vec3(100, 0, -100), vec3(0, 1), vec3(0, 0), vec3(1, 0), "brick");
-	//scene.AddTriangleCollider(vec3(100, 20, -100), vec3(100, 0, -100), vec3(100, 20, 100), vec3(0, 1), vec3(0, 0), vec3(1, 1), "brick");
-	//scene.AddTriangleCollider(vec3(100, 0, -100), vec3(100, 0, 100), vec3(100, 20, 100), vec3(0, 0), vec3(1, 0), vec3(1, 1), "brick");
-
-	//scene.AddTriangleCollider(vec3(-52, 0, 45), vec3(-52, 22, 45), vec3(-30, 22, 45), vec3(1, 0), vec3(1, 1), vec3(0, 1), "brick");
-	//scene.AddTriangleCollider(vec3(-30, 22, 45), vec3(-30, 0, 45), vec3(-52, 0, 45), vec3(0, 1), vec3(0, 0), vec3(1, 0), "brick");
-	//scene.AddTriangleCollider(vec3(-52, 22, 45), vec3(-52, 0, 45), vec3(-52, 22, -45), vec3(0, 1), vec3(0, 0), vec3(1, 1), "brick");
-	//scene.AddTriangleCollider(vec3(-52, 0, 45), vec3(-52, 0, -45), vec3(-52, 22, -45), vec3(0, 0), vec3(1, 0), vec3(1, 1), "brick");
-	//scene.AddTriangleCollider(vec3(37, 0, -45), vec3(50, 22, -45), vec3(-52, 22, -45), vec3(1, 0), vec3(1, 1), vec3(0, 1), "brick");
-	//scene.AddTriangleCollider(vec3(-52, 22, -45), vec3(-52, 0, -45), vec3(37, 0, -45), vec3(0, 1), vec3(0, 0), vec3(1, 0), "brick");
-	//scene.AddTriangleCollider(vec3(37, 22, -45), vec3(37, 0, -45), vec3(37, 22, 37), vec3(0, 1), vec3(0, 0), vec3(1, 1), "brick");
-	//scene.AddTriangleCollider(vec3(37, 0, -45), vec3(37, 0, 37), vec3(37, 22, 37), vec3(0, 0), vec3(1, 0), vec3(1, 1), "brick");
-	//scene.AddTriangleCollider(vec3(37, 22, 37), vec3(37, 0, 37), vec3(30, 22, 30), vec3(0, 1), vec3(0, 0), vec3(1, 1), "brick");
-	//scene.AddTriangleCollider(vec3(37, 0, 37), vec3(37, 0, 22), vec3(30, 22, 30), vec3(0, 0), vec3(1, 0), vec3(1, 1), "brick");
-
 	TextureManager::getInstance()->LoadTexture("grass", "../Resources/Textures/grass.jpg", GL_LINEAR, GL_LINEAR_MIPMAP_NEAREST);
-	TextureManager::getInstance()->LoadTexture("skydome2", "../Resources/Textures/skydome2.bmp", GL_LINEAR, GL_LINEAR_MIPMAP_NEAREST);
+	TextureManager::getInstance()->LoadTexture("skydome3", "../Resources/Textures/skydome3.bmp", GL_LINEAR, GL_LINEAR_MIPMAP_NEAREST);
 	TextureManager::getInstance()->LoadTexture("bawtext", "../Resources/Textures/bawtext.jpg", GL_LINEAR, GL_LINEAR_MIPMAP_NEAREST);
 
 
@@ -165,62 +144,68 @@ void OnMouseMove(int x, int y)
 
 void OnMouseClick(int button, int state, int x, int y)
 {
-
+	if (!fly)
+		fly = true;
+	else
+		fly = false;
 }
 
 void OnTimer(int id) {
 
-	if (keystate['w']) {
-		model->velocity_vertical = 1;
-		player->velocity_vertical = 1;
-		model->rotateLeft = false;
-		model->rotateRight = false;
-		model->rotateForward = true;
-	}
-	if (keystate['s']) {
-		model->velocity_vertical = -1;
-		player->velocity_vertical = -1;
-		model->rotateLeft = false;
-		model->rotateRight = false;
-		model->rotateForward = false;
-	}
-	if (keystate['a']) {
-		model->velocity_horizontal = 1;
-		player->velocity_horizontal = 1;
-		model->rotateLeft = true;
-		model->rotateRight = false;
-		model->rotateForward = false;
-	}
-	if (keystate['d']) {
-		model->velocity_horizontal = -1;
-		player->velocity_horizontal = -1;
-		model->rotateRight = true;
-		model->rotateLeft = false;
-		model->rotateForward = false;
-	}
-	if (keystate['q']){
-	}
-
-	if (captureMouse)
+	if (state == 2)
 	{
-		float theta = atan2(player->dir.z, player->dir.x);
-		float phi = asin(player->dir.y);
 
-		theta += (round(mousePosition.x) - windowCenterX) * 0.01;
-		phi -= (round(mousePosition.y) - windowCenterY) * 0.01;
+		if (keystate['w']) {
+			model->velocity_vertical = 1;
+			player->velocity_vertical = 1;
+			model->rotateLeft = false;
+			model->rotateRight = false;
+			model->rotateForward = false;
+		}
+		if (keystate['s']) {
+			model->velocity_vertical = -1;
+			player->velocity_vertical = -1;
+			model->rotateLeft = false;
+			model->rotateRight = false;
+			model->rotateForward = true;
+		}
+		if (keystate['a']) {
+			model->velocity_horizontal = 1;
+			player->velocity_horizontal = 1;
+			model->rotateLeft = true;
+			model->rotateRight = false;
+			model->rotateForward = false;
+		}
+		if (keystate['d']) {
+			model->velocity_horizontal = -1;
+			player->velocity_horizontal = -1;
+			model->rotateRight = true;
+			model->rotateLeft = false;
+			model->rotateForward = false;
+		}
+		if (keystate['q']) {
 
-		if (phi > 1.4) phi = 1.4;
-		if (phi < -1.4) phi = -1.4;
+		}
 
-		player->dir.x = cos(theta) * cos(phi);
-		player->dir.y = sin(phi);
-		player->dir.z = sin(theta) * cos(phi);
+		if (captureMouse)
+		{
+			float theta = atan2(player->dir.z, player->dir.x);
+			float phi = asin(player->dir.y);
 
-		glutWarpPointer(windowCenterX, windowCenterY);
+			theta += (round(mousePosition.x) - windowCenterX) * 0.01;
+			phi -= (round(mousePosition.y) - windowCenterY) * 0.01;
+
+			if (phi > 1.4) phi = 1.4;
+			if (phi < -1.4) phi = -1.4;
+
+			player->dir.x = cos(theta) * cos(phi);
+			player->dir.y = sin(phi);
+			player->dir.z = sin(theta) * cos(phi);
+
+			glutWarpPointer(windowCenterX, windowCenterY);
+		}
+		scene.Update();
 	}
-
-
-	scene.Update();
 
 	glutTimerFunc(17, OnTimer, 0);
 }
@@ -234,23 +219,37 @@ void OnRender() {
 	float previousT = T;
 	T = glutGet(GLUT_ELAPSED_TIME);
 
-	gluLookAt(
-		model->pos.x, model->pos.y+2, model->pos.z+3,
-		model->pos.x, model->pos.y, model->pos.z,
-		0.0f, 1.0f, 0.0f
-	);
+	if (!fly)
+	{
+		gluLookAt(
+			model->pos.x, model->pos.y + 2, model->pos.z + 3,
+			model->pos.x, model->pos.y, model->pos.z,
+			0.0f, 1.0f, 0.0f
+		);
+	}
+	else
+	{
+		gluLookAt(
+			0, player->pos.y+10, 0,
+			model->pos.x, model->pos.y, model->pos.z,
+			0.0f, 1.0f, 0.0f
+		);
+	}
 
-	g_manager.changeScreen(state);
+	g_manager.changeScreen(state,player->score,player->fuel,player->hp);
+
+	if (player->fuel <= 0 || player->hp <=0)
+	{
+		state = 3;
+	}
 
 	scene.Render();
-
-
 
 	GLfloat l0_ambient[] = { 0.2f, 0.2f, 0.2f };
 	GLfloat l0_diffuse[] = { 1.0f, 1.0f, 1.0 };
 	GLfloat l0_specular[] = { 0.5f, 0.5f, 0.5f };
 	GLfloat l0_position[] = { model->pos.x, model->pos.y, model->pos.z-0.5, 1.0f };
-	GLfloat l0_position2[] = { player->pos.x, player->pos.y, player->pos.z, 0.5f };
+	GLfloat l0_position2[] = { model->pos.x, model->pos.y, model->pos.z+3, 0.5f };
 
 	glEnable(GL_LIGHT0);
 	glLightfv(GL_LIGHT0, GL_AMBIENT, l0_ambient);

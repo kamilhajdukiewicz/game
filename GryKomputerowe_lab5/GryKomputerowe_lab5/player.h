@@ -7,9 +7,12 @@
 class Player : public SceneObject
 {
 public:
+	static Player* getInstance();
+private:
+	static Player* instance;
 	Player();
 	~Player();
-
+public:
 	void Render();
 	void Update();
 
@@ -23,6 +26,9 @@ public:
 
 	float fuel;
 	float maxFuel;
+
+	int hp;
+	int score;
 };
 
 #endif // !PLAYER_H

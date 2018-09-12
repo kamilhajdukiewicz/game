@@ -2,10 +2,11 @@
 #include "scene.h"
 #include "texturemanager.h"
 #include "skydome.h"
+#include "player.h"
 
 Scene::Scene()
 {
-	skydome = new Skydome(60, "skydome2");
+	skydome = new Skydome(60, "skydome3");
 }
 
 Scene::~Scene()
@@ -20,6 +21,8 @@ void Scene::Render()
 {
 	for (unsigned int i = 0; i < sceneObjects.size(); i++)
 		sceneObjects[i]->Render();
+	for (unsigned int i = 0; i < scenePoints.size(); i++)
+		scenePoints[i]->Render();
 
 	if (showSphereColliders)
 	{
@@ -32,6 +35,14 @@ void Scene::Render()
 			glTranslatef(sceneObjects[i]->pos.x, sceneObjects[i]->pos.y, sceneObjects[i]->pos.z);
 			glRotatef(90, 1, 0, 0);
 			glutWireSphere(sceneObjects[i]->radius, 24, 24);
+			glPopMatrix();
+		}
+		for (unsigned int i = 0; i < scenePoints.size(); i++)
+		{
+			glPushMatrix();
+			glTranslatef(sceneObjects[i]->pos.x, scenePoints[i]->pos.y, scenePoints[i]->pos.z);
+			glRotatef(90, 1, 0, 0);
+			glutWireSphere(scenePoints[i]->radius, 24, 24);
 			glPopMatrix();
 		}
 		glEnable(GL_LIGHTING);
@@ -127,12 +138,118 @@ void Scene::Update()
 		}
 	}
 
+		SceneObject* obj1 = sceneObjects[1];
+		for (int j = 2; j < sceneObjects.size(); j++)
+		{
+			SceneObject* obj2 = sceneObjects[j];
+
+			float r = vec3::distance(obj1->pos, obj2->pos);
+
+			float d = (obj1->radius + obj2->radius) - r;
+
+			if (d > -0.5)
+			{
+				vec3 v1 = obj1->pos - obj2->pos;
+				vec3 v2 = obj2->pos - obj1->pos;
+
+				v1 = v1.normalized();
+				v2 = v2.normalized();
+
+				obj1->pos = obj1->pos + v1 * (d / 2) * 1.2f;
+				obj2->pos = obj2->pos + v2 * (d / 2) * 1.2f;
+
+				float total_force = obj1->force.length() + obj2->force.length();
+
+				obj1->force = v1 * total_force * 1;
+				obj2->force = v2 * total_force * 1;
+				Player::getInstance()->hp -= 25;
+				obj2->isAlive = false;
+			}
+		}
+
+		for (int j = 0; j < scenePoints.size(); j++)
+		{
+			SceneObject* obj2 = scenePoints[j];
+
+			float r = vec3::distance(obj1->pos, obj2->pos);
+
+			float d = (obj1->radius + obj2->radius) - r;
+
+			if (d > -0.5)
+			{
+				vec3 v1 = obj1->pos - obj2->pos;
+				vec3 v2 = obj2->pos - obj1->pos;
+
+				v1 = v1.normalized();
+				v2 = v2.normalized();
+
+				obj1->pos = obj1->pos + v1 * (d / 2) * 1.2f;
+				obj2->pos = obj2->pos + v2 * (d / 2) * 1.2f;
+
+				float total_force = obj1->force.length() + obj2->force.length();
+
+				obj1->force = v1 * total_force * 0.5f;
+				obj2->force = v2 * total_force * 0.5;
+				obj2->isAlive = false;
+				Player::getInstance()->score += 100;
+			}
+		}
+
 	for (unsigned int i = 0; i < sceneObjects.size(); i++)
 		sceneObjects[i]->Update();
+	for (unsigned int i = 0; i < scenePoints.size(); i++)
+		scenePoints[i]->Update();
 
 	for (unsigned int i = 0; i < sceneObjects.size(); i++)
 	{
 		SceneObject* obj = sceneObjects[i];
+
+		for (int j = 0; j < collisionTriangles.size(); j++)
+		{
+			Triangle tr = collisionTriangles[j];
+
+			float currDist = tr.A * obj->pos.x + tr.B * obj->pos.y + tr.C * obj->pos.z + tr.D;
+			float prevDist = tr.A * obj->prevPos.x + tr.B * obj->prevPos.y + tr.C * obj->prevPos.z + tr.D;
+
+			if ((currDist * prevDist < 0) || abs(currDist) < obj->radius)
+			{
+				// Rzut pozycji obiektu na plaszczyzne
+				vec3 p = obj->pos - tr.n * currDist;
+
+				// Przesuniecie punktu do srodka trojkata o dlugosc promienia kolidera
+				vec3 r = (tr.v1 + tr.v2 + tr.v3) * (1.0f / 3.0f) - p;
+				r = r.normalized();
+				p = p + r * obj->radius;
+
+				// Obliczenie v, w, u - wspolrzednych barycentrycznych
+				vec3 v0 = tr.v2 - tr.v1, v1 = tr.v3 - tr.v1, v2 = p - tr.v1;
+				float d00 = vec3::dot(v0, v0);
+				float d01 = vec3::dot(v0, v1);
+				float d11 = vec3::dot(v1, v1);
+				float d20 = vec3::dot(v2, v0);
+				float d21 = vec3::dot(v2, v1);
+				float denom = d00 * d11 - d01 * d01;
+
+				float v = (d11 * d20 - d01 * d21) / denom;
+				float w = (d00 * d21 - d01 * d20) / denom;
+				float u = 1.0f - v - w;
+
+				// Sprawdzenie czy punkt jest w srodku trojkata
+				if (v >= 0 && w >= 0 && (v + w) <= 1)
+				{
+					float d = obj->radius - currDist;
+
+					obj->pos = obj->pos + tr.n * d;
+
+					obj->force = obj->force - tr.n * vec3::dot(tr.n, obj->force) * 2;
+				}
+			}
+		}
+	}
+
+	for (unsigned int i = 0; i < scenePoints.size(); i++)
+	{
+		SceneObject* obj = scenePoints[i];
 
 		for (int j = 0; j < collisionTriangles.size(); j++)
 		{
@@ -189,12 +306,31 @@ void Scene::Update()
 			it = sceneObjects.erase(it);
 		}
 	}
+
+	for (std::vector<SceneObject*>::iterator it = scenePoints.begin(); it != scenePoints.end();)
+	{
+		if ((*it)->isAlive)
+		{
+			it++;
+		}
+		else
+		{
+			delete (*it);
+			it = scenePoints.erase(it);
+		}
+	}
+
 	skydome->Update();
 }
 
 void Scene::addObject(SceneObject* object)
 {
 	sceneObjects.push_back(object);
+}
+
+void Scene::addPoint(SceneObject * object)
+{
+	scenePoints.push_back(object);
 }
 
 void Scene::AddTriangleCollider(vec3 v1, vec3 v2, vec3 v3, vec3 uv1, vec3 uv2, vec3 uv3, std::string textureName)

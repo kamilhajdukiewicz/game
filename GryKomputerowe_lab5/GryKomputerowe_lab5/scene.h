@@ -16,6 +16,7 @@ public:
 	void Update();
 
 	void addObject(SceneObject*);
+	void addPoint(SceneObject*);
 	void AddTriangleCollider(vec3 v1, vec3 v2, vec3 v3, vec3 uv1 = vec3(0, 0, 0), vec3 uv2 = vec3(0, 0, 0), vec3 uv3 = vec3(0, 0, 0), std::string textureName = "");
 
 	vec3 boundaryMin;
@@ -36,6 +37,7 @@ private:
 	};
 
 	std::vector<SceneObject*> sceneObjects;
+	std::vector<SceneObject*> scenePoints;
 	std::vector<Triangle> collisionTriangles;
 };
 #endif // !SCENE_H
