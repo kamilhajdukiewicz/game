@@ -230,7 +230,10 @@ void Model::Render()
 
 	glDisable(GL_TEXTURE_2D);
 }
-
+void Model::rotate()
+{
+	glRotatef(45, 1, 0, 0);
+}
 void Model::Update()
 {
 	pos.x += dir.x * speed * velocity_vertical;
@@ -249,4 +252,8 @@ void Model::Update()
 	force.x /= 1.2;
 	//force.y /= 1.2;
 	force.z /= 1.2;
+
+	rotate();
 }
+
+

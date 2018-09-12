@@ -73,11 +73,11 @@ int main(int argc, char* argv[])
 	scene.addObject(player);
 
 	model = new Model(vec3(player->pos.x, 0, player->pos.z-4), vec3(0, 0.5f, 1));
-	model->load("../Resources/Models/lowpoly.obj");
+	model->load("../Resources/Models/dino.obj");
 	//model->textureName = "brick";
 	model->modelTranslation = vec3(0, -0.8f, 0);
-	model->modelScale = vec3(0.5, 0.5, 0.5);
-	model->radius *= 0.2f;
+	model->modelScale = vec3(0.05, 0.05, 0.05);
+	model->radius *= 0.05f;
 	scene.addObject(model);
 
 	player = new Player();
@@ -186,24 +186,27 @@ void OnTimer(int id) {
 		model->velocity_horizontal = -1;
 		player->velocity_horizontal = -1;
 	}
+	if (keystate['q']) {
+		model->rotate();
+	}
 
-	//if (captureMouse)
-	//{
-	//	float theta = atan2(player->dir.z, player->dir.x);
-	//	float phi = asin(player->dir.y);
+	if (captureMouse)
+	{
+		float theta = atan2(player->dir.z, player->dir.x);
+		float phi = asin(player->dir.y);
 
-	//	theta += (round(mousePosition.x) - windowCenterX) * 0.01;
-	//	phi -= (round(mousePosition.y) - windowCenterY) * 0.01;
+		theta += (round(mousePosition.x) - windowCenterX) * 0.01;
+		phi -= (round(mousePosition.y) - windowCenterY) * 0.01;
 
-	//	if (phi > 1.4) phi = 1.4;
-	//	if (phi < -1.4) phi = -1.4;
+		if (phi > 1.4) phi = 1.4;
+		if (phi < -1.4) phi = -1.4;
 
-	//	player->dir.x = cos(theta) * cos(phi);
-	//	player->dir.y = sin(phi);
-	//	player->dir.z = sin(theta) * cos(phi);
+		player->dir.x = cos(theta) * cos(phi);
+		player->dir.y = sin(phi);
+		player->dir.z = sin(theta) * cos(phi);
 
-	//	glutWarpPointer(windowCenterX, windowCenterY);
-	//}
+		glutWarpPointer(windowCenterX, windowCenterY);
+	}
 
 
 	scene.Update();
@@ -221,14 +224,15 @@ void OnRender() {
 	T = glutGet(GLUT_ELAPSED_TIME);
 
 	gluLookAt(
-		player->pos.x, player->pos.y, player->pos.z,
-		player->pos.x + player->dir.x, player->pos.y + player->dir.y, player->pos.z + player->dir.z,
+		model->pos.x, model->pos.y+2, model->pos.z+3,
+		model->pos.x, model->pos.y, model->pos.z,
 		0.0f, 1.0f, 0.0f
 	);
 
+	g_manager.changeScreen(state);
 
 	scene.Render();
-	g_manager.changeScreen(state);
+
 
 
 	GLfloat l0_ambient[] = { 0.2f, 0.2f, 0.2f };

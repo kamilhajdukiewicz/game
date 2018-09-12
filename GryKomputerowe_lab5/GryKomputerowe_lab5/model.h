@@ -17,6 +17,8 @@ public:
 	void Render();
 	void Update();
 
+	void rotate();
+
 	vec3 color;
 
 	vec3 modelTranslation;
