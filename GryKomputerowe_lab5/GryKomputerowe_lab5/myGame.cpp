@@ -181,13 +181,16 @@ void OnTimer(int id) {
 	if (keystate['a']) {
 		model->velocity_horizontal = 1;
 		player->velocity_horizontal = 1;
+		model->rotateLeft = true;
+		model->rotateRight = false;
 	}
 	if (keystate['d']) {
 		model->velocity_horizontal = -1;
 		player->velocity_horizontal = -1;
+		model->rotateRight = true;
+		model->rotateLeft = false;
 	}
-	if (keystate['q']) {
-		model->rotate();
+	if (keystate['q']){
 	}
 
 	if (captureMouse)

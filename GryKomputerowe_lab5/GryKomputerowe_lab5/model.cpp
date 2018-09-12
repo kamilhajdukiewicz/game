@@ -12,7 +12,7 @@ Model::Model(vec3 pos, vec3 color)
 	dir.y = 0.0f;
 	dir.z = -1.0f;
 
-	speed = 0.1f;
+	speed = 0.3f;
 	radius = 0.5f;
 
 	velocity_horizontal = 0;
@@ -26,6 +26,9 @@ Model::Model(vec3 pos, vec3 color)
 	hasTexCoords = false;
 
 	displayListID = -1;
+
+	rotateLeft = false;
+	rotateRight = false;
 }
 
 Model::~Model()
@@ -224,6 +227,11 @@ void Model::Render()
 	glTranslatef(modelTranslation.x, modelTranslation.y, modelTranslation.z);
 	glScalef(modelScale.x, modelScale.y, modelScale.z);
 
+	if (rotateLeft == true || rotateRight==true)
+	{
+		rotate();
+	}
+
 	glCallList(displayListID);
 
 	glPopMatrix();
@@ -232,7 +240,17 @@ void Model::Render()
 }
 void Model::rotate()
 {
-	glRotatef(45, 1, 0, 0);
+	if (rotateLeft == true)
+	{
+		glRotatef(-90, 0, 1, 0);
+		//rotateRight = false;
+	}
+	if (rotateRight == true)
+	{
+		glRotatef(90, 0, 1, 0);
+		//rotateLeft = false;
+	}
+
 }
 void Model::Update()
 {
@@ -252,8 +270,6 @@ void Model::Update()
 	force.x /= 1.2;
 	//force.y /= 1.2;
 	force.z /= 1.2;
-
-	rotate();
 }
 
 

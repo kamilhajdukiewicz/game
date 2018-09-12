@@ -12,6 +12,9 @@ public:
 	Model(vec3 pos, vec3 color);
 	~Model();
 
+	bool rotateLeft;
+	bool rotateRight;
+
 	bool load(std::string filepath);
 
 	void Render();
