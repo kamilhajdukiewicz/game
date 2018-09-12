@@ -29,6 +29,7 @@ Model::Model(vec3 pos, vec3 color)
 
 	rotateLeft = false;
 	rotateRight = false;
+	rotateForward = false;
 }
 
 Model::~Model()
@@ -227,7 +228,7 @@ void Model::Render()
 	glTranslatef(modelTranslation.x, modelTranslation.y, modelTranslation.z);
 	glScalef(modelScale.x, modelScale.y, modelScale.z);
 
-	if (rotateLeft == true || rotateRight==true)
+	if (rotateLeft == true || rotateRight==true || rotateForward==true)
 	{
 		rotate();
 	}
@@ -249,6 +250,10 @@ void Model::rotate()
 	{
 		glRotatef(90, 0, 1, 0);
 		//rotateLeft = false;
+	}
+	if (rotateForward == true)
+	{
+		glRotatef(180, 0, 1, 0);
 	}
 
 }

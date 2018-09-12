@@ -173,22 +173,30 @@ void OnTimer(int id) {
 	if (keystate['w']) {
 		model->velocity_vertical = 1;
 		player->velocity_vertical = 1;
+		model->rotateLeft = false;
+		model->rotateRight = false;
+		model->rotateForward = true;
 	}
 	if (keystate['s']) {
 		model->velocity_vertical = -1;
 		player->velocity_vertical = -1;
+		model->rotateLeft = false;
+		model->rotateRight = false;
+		model->rotateForward = false;
 	}
 	if (keystate['a']) {
 		model->velocity_horizontal = 1;
 		player->velocity_horizontal = 1;
 		model->rotateLeft = true;
 		model->rotateRight = false;
+		model->rotateForward = false;
 	}
 	if (keystate['d']) {
 		model->velocity_horizontal = -1;
 		player->velocity_horizontal = -1;
 		model->rotateRight = true;
 		model->rotateLeft = false;
+		model->rotateForward = false;
 	}
 	if (keystate['q']){
 	}

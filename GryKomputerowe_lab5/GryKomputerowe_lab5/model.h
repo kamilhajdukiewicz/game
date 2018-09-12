@@ -12,6 +12,7 @@ public:
 	Model(vec3 pos, vec3 color);
 	~Model();
 
+	bool rotateForward;
 	bool rotateLeft;
 	bool rotateRight;
 
