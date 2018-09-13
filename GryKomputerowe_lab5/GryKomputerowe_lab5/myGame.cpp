@@ -89,9 +89,16 @@ int main(int argc, char* argv[])
 		}
 	}
 
-	Point * point = new Point(vec3(-27.5f, 0, -27.5f), vec3(0, 1, 0), 0.5f, 2);
-	point->ambient = vec3(0.7f, 0.7f, 0.7f);
-	scene.addPoint(point);
+	for (float i = -32.5; i < 27.5; i = i + 5)
+	{
+		for (float j = -32.5; j < 27.5; j = j + 5)
+		{
+			scene.addPoint(new Point(vec3(i, 0, j), vec3(0, 1, 0), 0.5f, 2));
+		}
+	}
+	//Point * point = new Point(vec3(-27.5f, 0, -27.5f), vec3(0, 1, 0), 0.5f, 2);
+	//point->ambient = vec3(0.7f, 0.7f, 0.7f);
+	//scene.addPoint(point);
 	
 	scene.boundaryMin = vec3(-50, 1, -50);
 	scene.boundaryMax = vec3(50, 10, 50);
